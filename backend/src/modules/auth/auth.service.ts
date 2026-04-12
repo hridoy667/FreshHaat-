@@ -120,7 +120,6 @@ export class AuthService {
           password: tempUserData.password,
           avatarUrl: tempUserData.avatarUrl,
           district: tempUserData.district,
-          gender: tempUserData.gender,
         },
       });
 

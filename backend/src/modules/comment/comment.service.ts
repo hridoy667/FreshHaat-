@@ -39,12 +39,6 @@ export class CommentService {
         },
       });
 
-      // Update post count
-      await tx.post.update({
-        where: { id: dto.postId },
-        data: { comment_count: { increment: 1 } },
-      });
-
       return newComment;
     });
   }

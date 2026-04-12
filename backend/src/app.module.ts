@@ -7,9 +7,7 @@ import { AppService } from './app.service';
 import configuration from './config/app.config'; // Your custom config file
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
-import { PostModule } from './modules/post/post.module';
 import { ChatModule } from './modules/chat/chat.module';
-import { VotingModule } from './modules/voting/voting.module';
 import { CommentModule } from './modules/comment/comment.module';
 import { ConversationModule } from './modules/conversation/conversation.module';
 import { DistrictsModule } from './modules/districts/districts.module';
@@ -52,9 +50,7 @@ import { DistrictsModule } from './modules/districts/districts.module';
         },
       }),
     }),
-    PostModule,
     ChatModule,
-    VotingModule,
     CommentModule,
     ConversationModule,
   ],
