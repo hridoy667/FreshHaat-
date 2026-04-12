@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  // output   = "../generated/prisma"
 }
 
 datasource db {
@@ -8,72 +7,318 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id                 String              @id @default(uuid())
-  email              String              @unique
-  phone              String?             @unique
-  first_name         String?
-  last_name          String?
-  userName           String?             @unique
-  password           String
-  district           String?
-  upazila            String?
-  avatarUrl          String?
-  bio                String?
-  dateOfBirth        DateTime?
-  latitude           Float?
-  longitude          Float?
-  type               String?             @default("user")
-  status             Int?                @default(1)
-  isVerified         Boolean             @default(false)
-  firebaseToken      String?             @unique
-  createdAt          DateTime            @default(now())
-  updatedAt          DateTime            @updatedAt
+//////////////////////
+// ENUMS
+//////////////////////
 
-  sentMessages       Message[]           @relation("SentMessages")
-  roomMemberships    Room[]
-  verificationTokens verificationToken[]
-  comments           comment[]
+enum UserRole {
+  USER
+  FARMER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PACKED
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+//////////////////////
+// USER
+//////////////////////
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  phone         String?   @unique
+  first_name    String?
+  last_name     String?
+  userName      String?   @unique
+  password      String
+  district      String?
+  upazila       String?
+  avatarUrl     String?
+  bio           String?
+  dateOfBirth   DateTime?
+  latitude      Float?
+  longitude     Float?
+  type          UserRole  @default(USER)
+  status        Int?      @default(1)
+  isVerified    Boolean   @default(false)
+  firebaseToken String?   @unique
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // relations
+  farmer              Farmer?
+  sentMessages        Message[]           @relation("SentMessages")
+  roomMemberships     Room[]
+  verificationTokens  verificationToken[]
+  comments            comment[]
+  shops               shop[]
+  orders              Order[]
 
   @@map("users")
 }
 
+//////////////////////
+// FARMER
+//////////////////////
+
+model Farmer {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id])
+
+  name        String
+  description String
+  imageUrl    String[]
+
+  shopId      String
+  shop        shop     @relation(fields: [shopId], references: [id])
+
+  IsVerified  Boolean  @default(false)
+  isActive    Boolean  @default(true)
+
+  products    products[]
+  harvests    Harvest[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("farmers")
+}
+
+//////////////////////
+// LOCATION
+//////////////////////
 
 model districts {
   id        Int    @id @default(autoincrement())
   name      String @unique
   latitude  Float
   longitude Float
+  shops     shop[]
 
   @@map("districts")
 }
 
+//////////////////////
+// SHOP
+//////////////////////
 
+model shop {
+  id          String            @id @default(uuid())
+  name        String
+  description String
 
-model comment {
-  id         String   @id @default(uuid())
-  content    String
-  authorId   String
-  postId     String
-  // --- New Fields for Replies ---
-  parentId   String?   // If null, it's a top-level comment
-  parent     comment?  @relation("CommentReplies", fields: [parentId], references: [id])
-  replies    comment[] @relation("CommentReplies")
-  hasReplies Boolean  @default(false)
-  author     User     @relation(fields: [authorId], references: [id])
+  categoryId  String
+  category    productCategories @relation(fields: [categoryId], references: [id])
+
+  imageUrl    String[]
+  products    products[]
+
+  userId      String
+  user        User              @relation(fields: [userId], references: [id])
+
+  district    districts?        @relation(fields: [districtId], references: [id])
+  districtId  Int?
+
+  reviews     review[]
+
+  latitude    Float?
+  longitude   Float?
+  location    Unsupported("geometry(Point, 4326)")?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([location], name: "location_idx", type: Gist)
+  @@map("shops")
+}
+
+//////////////////////
+// PRODUCT CATEGORY
+//////////////////////
+
+model productCategories {
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  shops     shop[]
+
+  @@map("product_categories")
+}
+
+//////////////////////
+// PRODUCTS
+//////////////////////
+
+model products {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+
+  price       Float
+  quantity    Int
+  unit        String   // kg, piece, etc.
+  isAvailable Boolean  @default(true)
+
+  imageUrl    String[]
+
+  shopId      String
+  shop        shop     @relation(fields: [shopId], references: [id])
+
+  farmerId    String?
+  farmer      Farmer?  @relation(fields: [farmerId], references: [id])
+
+  reviews     review[]
+  orderItems  OrderItem[]
+  groupOrders GroupOrder[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("products")
+}
+
+//////////////////////
+// ORDERS
+//////////////////////
+
+model Order {
+  id         String       @id @default(uuid())
+  userId     String
+  totalPrice Float
+  status     OrderStatus  @default(PENDING)
+
+  deliveryStatus String?
+  address        String?
+
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
+  user       User      @relation(fields: [userId], references: [id])
+  items      OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id        String   @id @default(uuid())
+  orderId   String
+  productId String
+
+  quantity  Int
+  price     Float
+
+  order     Order    @relation(fields: [orderId], references: [id])
+  product   products @relation(fields: [productId], references: [id])
+
+  @@map("order_items")
+}
+
+//////////////////////
+// PRE-BOOKING (HARVEST)
+//////////////////////
+
+model Harvest {
+  id          String   @id @default(uuid())
+  farmerId    String
+
+  productName String
+  expectedQty Int
+  price       Float
+  harvestDate DateTime
+
+  farmer      Farmer   @relation(fields: [farmerId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("harvests")
+}
+
+//////////////////////
+// GROUP BUYING
+//////////////////////
+
+model GroupOrder {
+  id         String   @id @default(uuid())
+  productId  String
+
+  targetQty  Int
+  currentQty Int      @default(0)
+
+  price      Float
+  deadline   DateTime
+
+  product    products @relation(fields: [productId], references: [id])
+
+  createdAt  DateTime @default(now())
+
+  @@map("group_orders")
+}
+
+//////////////////////
+// COMMENTS & REVIEWS
+//////////////////////
+
+model comment {
+  id         String    @id @default(uuid())
+  content    String
+  authorId   String
+  postId     String
+
+  parentId   String?
+  parent     comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  replies    comment[] @relation("CommentReplies")
+
+  hasReplies Boolean   @default(false)
+
+  author     User      @relation(fields: [authorId], references: [id])
+
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
   @@map("comments")
 }
+
+model review {
+  id        String   @id @default(uuid())
+  content   String
+  rating    Int
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+
+  productId String?
+  shopId    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("reviews")
+}
+
+//////////////////////
+// CHAT
+//////////////////////
 
 model Room {
   id        String    @id @default(uuid())
   roomKey   String?   @unique
   type      RoomType  @default(DIRECT)
   name      String?
+
   members   User[]
   messages  Message[]
+
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
@@ -83,10 +328,14 @@ model Room {
 model Message {
   id        String    @id @default(uuid())
   content   String
+
   senderId  String
   roomId    String
+
   readAt    DateTime?
+
   createdAt DateTime  @default(now())
+
   sender    User      @relation("SentMessages", fields: [senderId], references: [id])
   room      Room      @relation(fields: [roomId], references: [id])
 
@@ -98,12 +347,17 @@ enum RoomType {
   GROUP
 }
 
+//////////////////////
+// VERIFICATION
+//////////////////////
+
 model verificationToken {
   id        String   @id @default(uuid())
   userId    String?
   email     String?  @unique
   token     String
   expiresAt DateTime
+
   user      User?    @relation(fields: [userId], references: [id])
 
   @@map("verification_tokens")
