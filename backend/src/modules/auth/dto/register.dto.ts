@@ -13,6 +13,12 @@ enum Gender {
   female = 'female',
 }
 
+enum UserRole {
+  USER = 'user',
+  FARMER = 'farmer',
+  ADMIN = 'admin',
+}
+
 export class RegisterDto {
   @ApiProperty({ example: 'John' })
   @IsNotEmpty()
@@ -39,10 +45,10 @@ export class RegisterDto {
   @IsString()
   district: string;
 
-  @ApiProperty({ enum: Gender, example: 'male' })
+  @ApiProperty({ enum: UserRole, example: 'USER' })
   @IsNotEmpty()
-  @IsEnum(Gender)
-  gender: string;
+  @IsEnum(UserRole)
+  type: UserRole;
 
   @ApiProperty({ type: 'string', format: 'binary', required: false })
   @IsOptional()

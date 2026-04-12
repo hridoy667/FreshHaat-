@@ -189,10 +189,13 @@ export class AuthService {
     if (!isPasswordValid) throw new BadRequestException('Invalid credentials');
 
     const payload = {
+      sub: user.id,
+      type:user.type,
       firstName: user.first_name,
       email: user.email,
-      sub: user.id,
       district: user.district,
+      latitude: user.latitude,
+      longitude: user.longitude,
     };
 
     const accessToken = this.jwtService.sign(payload, { expiresIn: '5h' });

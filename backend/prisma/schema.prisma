@@ -1,10 +1,10 @@
 generator client {
   provider = "prisma-client-js"
+  // output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 //////////////////////
@@ -49,17 +49,18 @@ model User {
   status        Int?      @default(1)
   isVerified    Boolean   @default(false)
   firebaseToken String?   @unique
+  reviews       review[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
   // relations
-  farmer              Farmer?
-  sentMessages        Message[]           @relation("SentMessages")
-  roomMemberships     Room[]
-  verificationTokens  verificationToken[]
-  comments            comment[]
-  shops               shop[]
-  orders              Order[]
+  farmer             Farmer?
+  sentMessages       Message[]           @relation("SentMessages")
+  roomMemberships    Room[]
+  verificationTokens verificationToken[]
+  comments           comment[]
+  shops              shop[]
+  orders             Order[]
 
   @@map("users")
 }
@@ -69,25 +70,21 @@ model User {
 //////////////////////
 
 model Farmer {
-  id          String   @id @default(uuid())
-  userId      String   @unique
-  user        User     @relation(fields: [userId], references: [id])
-
+  id          String     @id @default(uuid())
+  userId      String     @unique
+  user        User       @relation(fields: [userId], references: [id])
   name        String
   description String
   imageUrl    String[]
-
   shopId      String
-  shop        shop     @relation(fields: [shopId], references: [id])
-
-  IsVerified  Boolean  @default(false)
-  isActive    Boolean  @default(true)
-
+  shop        shop       @relation(fields: [shopId], references: [id])
+  IsVerified  Boolean    @default(false)
+  isActive    Boolean    @default(true)
   products    products[]
   harvests    Harvest[]
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("farmers")
 }
@@ -111,30 +108,24 @@ model districts {
 //////////////////////
 
 model shop {
-  id          String            @id @default(uuid())
+  id          String                                @id @default(uuid())
   name        String
   description String
-
   categoryId  String
-  category    productCategories @relation(fields: [categoryId], references: [id])
-
+  category    productCategories                     @relation(fields: [categoryId], references: [id])
   imageUrl    String[]
   products    products[]
-
   userId      String
-  user        User              @relation(fields: [userId], references: [id])
-
-  district    districts?        @relation(fields: [districtId], references: [id])
+  user        User                                  @relation(fields: [userId], references: [id])
+  district    districts?                            @relation(fields: [districtId], references: [id])
   districtId  Int?
-
   reviews     review[]
-
   latitude    Float?
   longitude   Float?
   location    Unsupported("geometry(Point, 4326)")?
-
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  farmers     Farmer[]
+  createdAt   DateTime                              @default(now())
+  updatedAt   DateTime                              @updatedAt
 
   @@index([location], name: "location_idx", type: Gist)
   @@map("shops")
@@ -150,7 +141,7 @@ model productCategories {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  shops     shop[]
+  shops shop[]
 
   @@map("product_categories")
 }
@@ -160,29 +151,23 @@ model productCategories {
 //////////////////////
 
 model products {
-  id          String   @id @default(uuid())
+  id          String       @id @default(uuid())
   name        String
   description String
-
   price       Float
   quantity    Int
-  unit        String   // kg, piece, etc.
-  isAvailable Boolean  @default(true)
-
+  unit        String // kg, piece, etc.
+  isAvailable Boolean      @default(true)
   imageUrl    String[]
-
   shopId      String
-  shop        shop     @relation(fields: [shopId], references: [id])
-
+  shop        shop         @relation(fields: [shopId], references: [id])
   farmerId    String?
-  farmer      Farmer?  @relation(fields: [farmerId], references: [id])
-
-  reviews     review[]
+  farmer      Farmer?      @relation(fields: [farmerId], references: [id])
   orderItems  OrderItem[]
   groupOrders GroupOrder[]
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("products")
 }
@@ -192,19 +177,16 @@ model products {
 //////////////////////
 
 model Order {
-  id         String       @id @default(uuid())
-  userId     String
-  totalPrice Float
-  status     OrderStatus  @default(PENDING)
-
+  id             String      @id @default(uuid())
+  userId         String
+  totalPrice     Float
+  status         OrderStatus @default(PENDING)
   deliveryStatus String?
   address        String?
-
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  user       User      @relation(fields: [userId], references: [id])
-  items      OrderItem[]
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  user           User        @relation(fields: [userId], references: [id])
+  items          OrderItem[]
 
   @@map("orders")
 }
@@ -213,10 +195,8 @@ model OrderItem {
   id        String   @id @default(uuid())
   orderId   String
   productId String
-
   quantity  Int
   price     Float
-
   order     Order    @relation(fields: [orderId], references: [id])
   product   products @relation(fields: [productId], references: [id])
 
@@ -230,14 +210,11 @@ model OrderItem {
 model Harvest {
   id          String   @id @default(uuid())
   farmerId    String
-
   productName String
   expectedQty Int
   price       Float
   harvestDate DateTime
-
   farmer      Farmer   @relation(fields: [farmerId], references: [id])
-
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -251,15 +228,11 @@ model Harvest {
 model GroupOrder {
   id         String   @id @default(uuid())
   productId  String
-
   targetQty  Int
   currentQty Int      @default(0)
-
   price      Float
   deadline   DateTime
-
   product    products @relation(fields: [productId], references: [id])
-
   createdAt  DateTime @default(now())
 
   @@map("group_orders")
@@ -274,15 +247,11 @@ model comment {
   content    String
   authorId   String
   postId     String
-
   parentId   String?
   parent     comment?  @relation("CommentReplies", fields: [parentId], references: [id])
   replies    comment[] @relation("CommentReplies")
-
   hasReplies Boolean   @default(false)
-
   author     User      @relation(fields: [authorId], references: [id])
-
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
 
@@ -293,13 +262,12 @@ model review {
   id        String   @id @default(uuid())
   content   String
   rating    Int
-
   userId    String
   user      User     @relation(fields: [userId], references: [id])
-
   productId String?
   shopId    String?
-
+  shop      shop?    @relation(fields: [shopId], references: [id])
+  farmerId  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -315,10 +283,8 @@ model Room {
   roomKey   String?   @unique
   type      RoomType  @default(DIRECT)
   name      String?
-
   members   User[]
   messages  Message[]
-
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
@@ -328,14 +294,10 @@ model Room {
 model Message {
   id        String    @id @default(uuid())
   content   String
-
   senderId  String
   roomId    String
-
   readAt    DateTime?
-
   createdAt DateTime  @default(now())
-
   sender    User      @relation("SentMessages", fields: [senderId], references: [id])
   room      Room      @relation(fields: [roomId], references: [id])
 
@@ -357,7 +319,6 @@ model verificationToken {
   email     String?  @unique
   token     String
   expiresAt DateTime
-
   user      User?    @relation(fields: [userId], references: [id])
 
   @@map("verification_tokens")
