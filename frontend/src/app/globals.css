@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  
+  /* 1. Map Tailwind's default sans to Be Vietnam Pro */
+  --font-sans: var(--font-be-vietnam);
+  
+  /* 2. Create a specific heading utility for Plus Jakarta Sans */
+  --font-heading: var(--font-plus-jakarta);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+/* 3. Set the global defaults */
+body {
+  background: var(--background);
+  color: var(--foreground);
+  /* Use the Be Vietnam Pro variable we set in layout.tsx */
+  font-family: var(--font-be-vietnam), ui-sans-serif, system-ui, sans-serif;
+  @apply antialiased;
+}
+
+/* 4. Auto-style headings for that "Organic Precision" look */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-plus-jakarta), sans-serif;
+  font-weight: 800; /* ExtraBold as per your guide */
+  letter-spacing: -0.02em;
+}
