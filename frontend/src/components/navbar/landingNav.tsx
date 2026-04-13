@@ -19,7 +19,7 @@ const LandingNav = () => {
     return (
         <nav className="w-full bg-white border-b border-gray-100 sticky top-0 z-50">
             <div className="">
-                <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 flex items-center justify-between h-20">
+                <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 flex items-center justify-between h-17">
                     {/* Logo */}
                     <div className="shrink-0 flex items-center">
                         <Link href="/" className="text-2xl font-bold text-green-600">
@@ -28,7 +28,7 @@ const LandingNav = () => {
                     </div>
 
                     {/* Desktop Menu */}
-                    <div className="hidden md:flex space-x-8 items-center">
+                    <div className="hidden md:flex space-x-3 items-center gap-5">
                         <Link href="/shops" className="text-gray-600 hover:text-green-600 font-medium transition">
                             Shops
                         </Link>

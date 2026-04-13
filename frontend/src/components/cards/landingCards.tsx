@@ -23,11 +23,11 @@ export default function FeatureGrid({ features, columns = 4 }: FeatureGridProps)
   };
 
   return (
-    <div className={`grid gap-8 ${gridCols[columns]}`}>
+    <div className={`grid gap-5 ${gridCols[columns]}`}>
       {features.map((feature) => (
         <div 
           key={feature.id} 
-          className="group p-5 rounded-2xl border border-zinc-100 bg-zinc-50/50 hover:bg-white hover:shadow-xl hover:shadow-green-900/5 transition-all duration-300"
+          className="group p-5 rounded-2xl border border-zinc-100 shadow-2xl bg-white hover:bg-white hover:shadow-green-900/5 transition-all duration-300"
         >
           {/* Icon Container */}
           <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
