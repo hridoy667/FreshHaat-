@@ -17,9 +17,9 @@ const LandingNav = () => {
     }
 
     return (
-        <nav className="bg-white border-b border-gray-100 sticky top-0 z-50">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-evenly h-16 items-center">
+        <nav className="w-full bg-white border-b border-gray-100 sticky top-0 z-50">
+            <div className="">
+                <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 flex items-center justify-between h-20">
                     {/* Logo */}
                     <div className="shrink-0 flex items-center">
                         <Link href="/" className="text-2xl font-bold text-green-600">
@@ -35,11 +35,13 @@ const LandingNav = () => {
                         <Link href="/farmers" className="text-gray-600 hover:text-green-600 font-medium transition">
                             Farmers
                         </Link>
+                        <Link href="/farmers" className="text-gray-600 hover:text-green-600 font-medium transition">
+                            Wholesale
+                        </Link>
                         <Link href="/about" className="text-gray-600 hover:text-green-600 font-medium transition">
                             About
                         </Link>
                     </div>
-                    {/* hide this in mobile screen */}
                     <div className="hidden md:flex space-x-5 border-l pl-6 border-gray-200">
                         <Link href="/cart" className="text-green-600 hover:text-green-700 transition-colors">
                             <ShoppingCart size={24} fill="currentColor" />
