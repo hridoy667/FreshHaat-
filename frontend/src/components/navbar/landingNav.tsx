@@ -22,8 +22,8 @@ const LandingNav = () => {
                 <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 flex items-center justify-between h-17">
                     {/* Logo */}
                     <div className="shrink-0 flex items-center">
-                        <Link href="/" className="text-2xl font-bold text-green-600">
-                            FreshHaat
+                        <Link href="/" className="">
+                            <img src="/logo.png" className="h-16 mix-blend-multiply" alt="" />
                         </Link>
                     </div>
 

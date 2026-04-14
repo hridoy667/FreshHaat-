@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Be_Vietnam_Pro, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import LandingNav from "@/components/navbar/landingNav"; // 👈 Import here
+import SmoothScroll from "@/components/SmoothScroll";
 
 // Headlines: Plus Jakarta Sans (Weights 700 and 800)
 export const plusJakartaSans = Plus_Jakarta_Sans({
@@ -32,13 +33,16 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${plusJakartaSans.variable} ${beVietnamPro.variable} h-full antialiased`}
+      className={`${plusJakartaSans.variable} ${beVietnamPro.variable} antialiased`}
     >
-      <body className={`${beVietnamPro.className} min-h-full flex flex-col bg-gray-50 text-slate-900`}>
-        <LandingNav />
-        <main className="grow">
-          {children}
-        </main>
+      <body className={`${beVietnamPro.className} flex flex-col bg-gray-50 text-slate-900`}>
+        {/* 1. Wrap EVERYTHING inside the SmoothScroll provider */}
+        <SmoothScroll>
+          <LandingNav />
+          <main className="grow">
+            {children}
+          </main>
+        </SmoothScroll>
       </body>
     </html>
   );
