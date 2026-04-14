@@ -98,11 +98,11 @@ export default function Home() {
               FreshHaat connects you to local farmers. Get hand-picked produce at fair prices, ensuring farmers earn more and you eat better.
             </p>
             <div className="flex gap-4 mt-10">
-              <Button href="/shop" variant="primary">
+              <Button href="/auth/login" variant="primary">
                 Shop Now
               </Button>
 
-              <Button href="/sell" variant="outline">
+              <Button href="/auth/register" variant="outline">
                 Sell Your Crops
               </Button>
             </div>

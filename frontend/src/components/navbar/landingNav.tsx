@@ -46,7 +46,7 @@ const LandingNav = () => {
                         <Link href="/cart" className="text-green-600 hover:text-green-700 transition-colors">
                             <ShoppingCart size={24} fill="currentColor" />
                         </Link>
-                        <Link href="/profile" className="text-green-600 hover:text-green-700 transition-colors">
+                        <Link href="/auth/login" className="text-green-600 hover:text-green-700 transition-colors">
                             <User size={24} fill="currentColor" />
                         </Link>
                     </div>

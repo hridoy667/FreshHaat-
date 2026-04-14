@@ -19,7 +19,7 @@ export default function Button({
   className = "" 
 }: ButtonProps) {
   
-  const baseStyles = "px-8 py-4 rounded-full font-bold transition-all duration-200 active:scale-95 inline-block text-center";
+  const baseStyles = "px-8 py-2 lg:py-4 md:py-3 rounded-full font-bold transition-all duration-200 active:scale-95 inline-block text-center";
   
   const variants = {
     primary: "bg-green-700 text-white hover:bg-green-800 shadow-md hover:shadow-lg",
