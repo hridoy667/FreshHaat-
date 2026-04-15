@@ -17,15 +17,13 @@ export default function LoginPage() {
   const inputBase = "w-full pl-11 pr-4 py-3.5 rounded-xl bg-zinc-100 border border-zinc-200 text-zinc-800 text-sm focus:bg-white focus:ring-2 focus:ring-green-600/10 focus:outline-none transition-all placeholder:text-zinc-400";
 
   return (
-    <main className="min-h-screen bg-zinc-50 flex flex-col justify-center py-12 px-4">
-      
-      <div className="max-w-md mx-auto w-full mb-8">
+    <main className="min-h-screen bg-zinc-50 flex flex-col justify-center py-8 px-4">
+      <div className="max-w-md mx-auto w-full mb-5">
         <Link href="/" className="inline-flex items-center gap-2 text-sm text-zinc-500 hover:text-green-700 transition-colors group">
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
           Back to FreshHaat
         </Link>
       </div>
-
       <div className="max-w-md mx-auto w-full">
         <header className="text-center mb-10">
           <h1 className="text-3xl font-extrabold text-zinc-950 font-heading tracking-tight">

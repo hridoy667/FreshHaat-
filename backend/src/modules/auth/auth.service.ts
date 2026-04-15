@@ -205,6 +205,7 @@ export class AuthService {
       message: 'Login successful',
       data: {
         accessToken,
+        type:user.type
       },
     };
   }

@@ -11,17 +11,18 @@ import { ChatModule } from './modules/chat/chat.module';
 import { CommentModule } from './modules/comment/comment.module';
 import { ConversationModule } from './modules/conversation/conversation.module';
 import { DistrictsModule } from './modules/districts/districts.module';
+import { ShopModule } from './modules/shop/shop.module';
 
 @Module({
   imports: [
     // 1. You MUST load the ConfigModule first
-    AuthModule,
-    DistrictsModule,
-    UsersModule,
     ConfigModule.forRoot({
       load: [configuration],
       isGlobal: true, // This makes it available to RedisModule and others
     }),
+    AuthModule,
+    DistrictsModule,
+    UsersModule,
     //bullmq
     // 1. Fix: Use forRootAsync for BullMQ
     BullModule.forRootAsync({
@@ -53,6 +54,7 @@ import { DistrictsModule } from './modules/districts/districts.module';
     ChatModule,
     CommentModule,
     ConversationModule,
+    ShopModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,5 +1,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-floating-promises */
+import 'dotenv/config';
+
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
@@ -7,10 +9,11 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AllExceptionsFilter } from './common/filters/http-exception.filter';
 import { join } from 'path';
+
 // import * as cookieParser from 'cookie-parser';
 
 // You'll need to install: yarn add cookie-parser
-
+console.log('DATABASE_URL at boot:', process.env.DATABASE_URL);
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);

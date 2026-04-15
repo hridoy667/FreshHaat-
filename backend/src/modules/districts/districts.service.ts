@@ -7,7 +7,6 @@ export class DistrictsService {
 
   findAll() {
     return this.prisma.districts.findMany({
-      orderBy: { name: 'asc' },
       select: { id: true, name: true },
     });
   }

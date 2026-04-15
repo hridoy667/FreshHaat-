@@ -200,9 +200,8 @@ export default function Home() {
       </section>
 
 
-      <section className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 py-24 ">
-        <div className="grid grid-cols-1 md:grid-cols-2 rounded-full ">
-
+      <section className="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 py-24">
+        <div className="grid grid-cols-1 md:grid-cols-2 rounded-full">
           {/* 1. Farmer CTA - Dark, Authoritative */}
           <div className="flex flex-col justify-between p-10 md:p-16 bg-zinc-900 text-white overflow-hidden relative">
             <div>

@@ -5,6 +5,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 //////////////////////
@@ -94,7 +95,7 @@ model Farmer {
 //////////////////////
 
 model districts {
-  id        Int    @id @default(autoincrement())
+  id        Int    @id
   name      String @unique
   latitude  Float
   longitude Float
@@ -108,24 +109,24 @@ model districts {
 //////////////////////
 
 model shop {
-  id          String                                @id @default(uuid())
-  name        String
-  description String
-  categoryId  String
-  category    productCategories                     @relation(fields: [categoryId], references: [id])
-  imageUrl    String[]
-  products    products[]
-  userId      String
-  user        User                                  @relation(fields: [userId], references: [id])
-  district    districts?                            @relation(fields: [districtId], references: [id])
-  districtId  Int?
-  reviews     review[]
-  latitude    Float?
-  longitude   Float?
-  location    Unsupported("geometry(Point, 4326)")?
-  farmers     Farmer[]
-  createdAt   DateTime                              @default(now())
-  updatedAt   DateTime                              @updatedAt
+  id           String                                @id @default(uuid())
+  name         String
+  description  String
+  logo         String?
+  imageUrl     String[]
+  categories   productCategories[]
+  products     products[]
+  userId       String
+  user         User                                  @relation(fields: [userId], references: [id])
+  district     districts?                            @relation(fields: [districtName], references: [name])
+  districtName String?
+  reviews      review[]
+  latitude     Float?
+  longitude    Float?
+  location     Unsupported("geometry(Point, 4326)")?
+  farmers      Farmer[]
+  createdAt    DateTime                              @default(now())
+  updatedAt    DateTime                              @updatedAt
 
   @@index([location], name: "location_idx", type: Gist)
   @@map("shops")
@@ -136,12 +137,12 @@ model shop {
 //////////////////////
 
 model productCategories {
-  id        String   @id @default(uuid())
-  name      String
+  id    Int    @id
+  name  String
+  shops shop[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  shops shop[]
 
   @@map("product_categories")
 }
