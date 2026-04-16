@@ -1,4 +1,5 @@
-import { IsLatitude, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { Transform, Type } from "class-transformer";
+import { ArrayNotEmpty, IsArray, IsInt, IsLatitude, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 
 export class CreateShopDto {
 
@@ -12,30 +13,40 @@ export class CreateShopDto {
 
     @IsNotEmpty()
     @IsString()
-    districtName: string; 
+    districtName: string;
+
+    @IsNotEmpty()
+    @IsArray()
+    @Transform(({ value }) => {
+        if (typeof value === 'string') {
+            // This line removes [ ] and " characters before splitting
+            const cleanedValue = value.replace(/[\[\]"]/g, '');
+            return cleanedValue.split(',').map((id) => Number(id.trim()));
+        }
+        if (Array.isArray(value)) {
+            return value.map((id) => Number(id));
+        }
+        return value;
+    })
+    @IsInt({ each: true })
+    categoryIds: number[];
 
     @IsOptional()
+    @IsString()
+    logo?: string;
+
+    @IsOptional()
+    @IsArray()
+    @IsString({ each: true })
+    photos?: string[];
+
+    @IsOptional()
+    @Transform(({ value }) => parseFloat(value)) // Convert string "23.8" to number 23.8
+    @IsNumber() // Use IsNumber instead of IsString
     latitude?: number;
 
     @IsOptional()
+    @Transform(({ value }) => parseFloat(value))
+    @IsNumber()
     longitude?: number;
 }
-
-
-// id          String                                @id @default(uuid())
-// name        String
-// description String
-// imageUrl    String[]
-// categories productCategories[]
-// products    products[]
-// userId      String
-// user        User                                  @relation(fields: [userId], references: [id])
-// district    districts?                            @relation(fields: [districtId], references: [id])
-// districtId  Int?
-// reviews     review[]
-// latitude    Float?
-// longitude   Float?
-// location    Unsupported("geometry(Point, 4326)")?
-// farmers     Farmer[]
-// createdAt   DateTime                              @default(now())
-// updatedAt   DateTime                              @updatedAt

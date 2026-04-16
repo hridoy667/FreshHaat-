@@ -2,7 +2,7 @@ export default () => ({
   app: {
     name: process.env.APPNAME,
     key: process.env.APP_KEY,
-    url: process.env.APP_URL,
+    url: process.env.BACKEND_URL,
     frontend_url: process.env.FRONTEND_URL,
     // port: parseInt(process.env.PORT, 10) || 3000,
   },

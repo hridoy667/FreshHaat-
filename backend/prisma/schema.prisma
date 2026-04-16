@@ -110,23 +110,24 @@ model districts {
 
 model shop {
   id           String                                @id @default(uuid())
-  name         String
+  name         String @unique
   description  String
   logo         String?
-  imageUrl     String[]
-  categories   productCategories[]
-  products     products[]
+  districtName String
+  status       Int  @default(1)
   userId       String
-  user         User                                  @relation(fields: [userId], references: [id])
-  district     districts?                            @relation(fields: [districtName], references: [name])
-  districtName String?
-  reviews      review[]
   latitude     Float?
   longitude    Float?
-  location     Unsupported("geometry(Point, 4326)")?
-  farmers      Farmer[]
+  imageUrl     String[]
   createdAt    DateTime                              @default(now())
   updatedAt    DateTime                              @updatedAt
+  categories   productCategories[]
+  products     products[]
+  user         User                                  @relation(fields: [userId], references: [id])
+  district     districts?                            @relation(fields: [districtName], references: [name])
+  reviews      review[]
+  location     Unsupported("geometry(Point, 4326)")?
+  farmers      Farmer[]
 
   @@index([location], name: "location_idx", type: Gist)
   @@map("shops")

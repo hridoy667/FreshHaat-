@@ -1,8 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, UseInterceptors, UploadedFiles } from '@nestjs/common';
 import { ShopService } from './shop.service';
 import { CreateShopDto } from './dto/create-shop.dto';
 import { UpdateShopDto } from './dto/update-shop.dto';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
+import { ApiConsumes } from '@nestjs/swagger';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { memoryStorage } from 'multer';
 
 
 @UseGuards(JwtAuthGuard)
@@ -11,10 +14,23 @@ export class ShopController {
   constructor(private readonly shopService: ShopService) {}
 
   @Post()
-  create(@Body() createShopDto: CreateShopDto, @Req() req:any) {
-    const userId=req.user.sub
-    console.log(userId)
-    return this.shopService.create(userId, createShopDto);
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'logo', maxCount: 1 },
+      { name: 'photos', maxCount: 5 },
+    ], {
+      storage: memoryStorage(),
+      limits: { fileSize: 8 * 1024 * 1024 }, // 8MB limit
+    })
+  )
+  async create(
+    @Body() dto: CreateShopDto,
+    @Req() req,
+    @UploadedFiles() files: { logo?: Express.Multer.File[], photos?: Express.Multer.File[] },
+  ) {
+    const userId = req.user.userId;
+    return this.shopService.create(userId, dto, files);
   }
 
   // GET /shops

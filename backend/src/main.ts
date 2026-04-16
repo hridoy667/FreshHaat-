@@ -24,9 +24,12 @@ async function bootstrap() {
   // Validation: Transforms plain objects to DTO classes and strips extra fields
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true, // Strips fields not defined in the DTO
-      transform: true, // Automatically converts types (e.g., string "1" to number 1)
-      forbidNonWhitelisted: true, // Throws error if extra fields are sent
+      whitelist: true,
+      transform: true, 
+      forbidNonWhitelisted: true,
+      transformOptions: {
+        enableImplicitConversion: true, // This helps with automatic type casting
+      },
     }),
   );
 
